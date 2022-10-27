@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>DevSecOps</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        /* Remove the navbar's default rounded borders and increase the bottom margin */
+        .navbar {
+            margin-bottom: 50px;
+            border-radius: 0;
+        }
+
+        /* Remove the jumbotron's default bottom margin */
+        .jumbotron {
+            margin-bottom: 0;
+        }
+
+        /* Add a gray background color and some padding to the footer */
+        footer {
+            background-color: #f2f2f2;
+            padding: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="jumbotron">
+        <div class="container text-center">
+            <h1>DevSecOps VNC Console</h1>
+            <p>Choose Your Server</p>
+        </div>
+    </div>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header"> <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#myNavbar"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+                        class="icon-bar"></span> </button> <a class="navbar-brand" href="#">p1ngp0ng.net</a> </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li ><a href="/">Home</a></li>
+                    <li ><a href="/presentations.html">Presentation</a></li>
+                    <li ><a href="/instructions.html">Lab Instructions</a></li>
+                    <li class="active"><a href="/troubleshoot.html">Troubleshoot</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Your Account</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <article class="article">
+                    <div class="article-container pt-3">
+                        <h1>Practical DevOps - The Lab</h1>
+                    </div>
+                    
+                            <h3 id="troubleshooting">Troubleshooting</h3>
+                            <h5 id="1-vagrant-stucknetwork-disconnectedansible-error-as-shown-below">1. Vagrant
+                                stuck/Network
+                                Disconnected/Ansible Error as shown below</h5>
+                            <p><img src="img/30.png" alt="vagrant not working"> The best solution here is to first check
+                                the
+                                status using</p>
+                            <div class="highlight">
+                                <pre
+                                    style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash hljs" data-lang="bash">vagrant status                    </code></pre>
+                            </div>
+                            <p>Then identify the machine which caused a problem. For Ex: logstash.devops Then</p>
+                            <div class="highlight">
+                                <pre
+                                    style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash hljs" data-lang="bash">vagrant destroy logstash.devops -f                    </code></pre>
+                            </div>
+                            <p>Finally , bring up and provision all those machines which are not in running state</p>
+                            <div class="highlight">
+                                <pre
+                                    style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash hljs" data-lang="bash">vagrant up &lt;machine-1&gt; &lt;machine-2&gt; &lt;machine-3&gt;                     </code></pre>
+                            </div>
+                            <p>and so on… Below example highlights all the steps</p>
+                            <blockquote>
+                                <p>NOTE: If you are destroying staging.devops production.devops and archiver.devops then
+                                    ensure
+                                    that once these machines are up you should also run</p>
+                            </blockquote>
+                            <div class="highlight">
+                                <pre
+                                    style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash hljs" data-lang="bash">vagrant up jenkins.devops --provision                    </code></pre>
+                            </div>
+                            <p>The reason why we need to do this is because Jenkins needs to read the SSH keys of these
+                                servers
+                                in order to execute commands remotely.</p>
+                            <h5 id="2-production-application-is-failing-to-start">2. Production Application is failing
+                                to start
+                            </h5>
+                            <p>If your production application is not showing any data its most likely because the vault
+                                token
+                                has expired. The best solution is to regenerate it using the following commands </p>
+                            <div class="highlight">
+                                <pre
+                                    style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash hljs" data-lang="bash">vagrant ssh vault.devops                    vault status                    cat /etc/vault/rootkey | vault login -                    vault policy list                    vault token create -policy<span style="color:#f92672">=</span>mysql_db                    </code></pre>
+                            </div>
+                            <!-- <p>Below is the asciinema roll for the above commands</p>
+                            <p>
+                                <asciinema-player src="/casts/vaulttoken.cast" cols="640" rows="25" preload="1"
+                                    start-at="0" speed="1">
+                                    <div data-reactroot="" tabindex="-1" class="asciinema-player-wrapper hud">
+                                        <div class="asciinema-player asciinema-theme-asciinema">
+                                            <pre class="asciinema-terminal font-small"
+                                                style="width: 640ch; height: 33.333333em;"><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span></pre>
+                                            <div class="control-bar"><span class="playback-button"><svg version="1.1"
+                                                        viewBox="0 0 12 12" class="icon">
+                                                        <path d="M1,0 L11,6 L1,12 Z"></path>
+                                                    </svg></span><span class="timer"><span
+                                                        class="time-elapsed">00:00</span><span
+                                                        class="time-remaining">-00:14</span></span><span
+                                                    class="fullscreen-button"><svg version="1.1" viewBox="0 0 12 12"
+                                                        class="icon">
+                                                        <path d="M12,0 L7,0 L9,2 L7,4 L8,5 L10,3 L12,5 Z"></path>
+                                                        <path d="M0,12 L0,7 L2,9 L4,7 L5,8 L3,10 L5,12 Z"></path>
+                                                    </svg><svg version="1.1" viewBox="0 0 12 12" class="icon">
+                                                        <path d="M7,5 L7,0 L9,2 L11,0 L12,1 L10,3 L12,5 Z"></path>
+                                                        <path d="M5,7 L0,7 L2,9 L0,11 L1,12 L3,10 L5,12 Z"></path>
+                                                    </svg></span><span class="progressbar"><span class="bar"><span
+                                                            class="gutter"><span
+                                                                style="width: 0%;"></span></span></span></span>
+                                            </div>
+                                            <div class="start-prompt">
+                                                <div class="play-button">
+                                                    <div><span><svg version="1.1"
+                                                                viewBox="0 0 866.0254037844387 866.0254037844387"
+                                                                class="icon">
+                                                                <defs>
+                                                                    <mask id="small-triangle-mask">
+                                                                        <rect width="100%" height="100%" fill="white">
+                                                                        </rect>
+                                                                        <polygon
+                                                                            points="508.01270189221935 433.01270189221935, 208.0127018922194 259.8076211353316, 208.01270189221927 606.217782649107"
+                                                                            fill="black"></polygon>
+                                                                    </mask>
+                                                                </defs>
+                                                                <polygon
+                                                                    points="808.0127018922194 433.01270189221935, 58.01270189221947 -1.1368683772161603e-13, 58.01270189221913 866.0254037844386"
+                                                                    mask="url(#small-triangle-mask)" fill="white">
+                                                                </polygon>
+                                                                <polyline
+                                                                    points="481.2177826491071 333.0127018922194, 134.80762113533166 533.0127018922194"
+                                                                    stroke="white" stroke-width="90"></polyline>
+                                                            </svg></span></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </asciinema-player>
+                            </p> -->
+                            <h5 id="3-vagrant-ssh-getting-stuck-or-vagrant-machines-not-booting">3. Vagrant SSH getting
+                                stuck or
+                                Vagrant machines not booting</h5>
+                            <p><img src="img/32.png" alt="vagrant not booting"></p>
+                            <p>Check if Virtualization is enabled in your Host If you are running inside an Ubuntu Guest
+                                VM then
+                                ensure that virtualization has been enabled “vt-x” as shown below for Virtualbox.</p>
+                            <p><img src="img/33.png" alt="virtualization not enabled"></p>
+                            <h5 id="4-jenkins-version-update">4. Jenkins Version Update</h5>
+                            <p>When installing Jenkins using the <a
+                                    href="https://github.com/geerlingguy/ansible-role-jenkins" target="_blank"
+                                    rel="noopener">geerlinguy-jenkins-role</a> there is an open issues where any
+                                version above 2.191 the automatic plugin installation fails. Below is the link to the
+                                issues in
+                                question. <a href="https://github.com/geerlingguy/ansible-role-jenkins/issues/269"
+                                    target="_blank"
+                                    rel="noopener">https://github.com/geerlingguy/ansible-role-jenkins/issues/269</a>
+                                Hence,
+                                while provisioning Jenkins i am using version 2.330 and post provisioning if you would
+                                like to
+                                update Jenkins then peruse the commands below. </p>
+                            <div class="highlight">
+                                <pre
+                                    style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash hljs" data-lang="bash">
+                                        vagrant ssh jenkins.devops 
+                                                           sudo service jenkins stop                   
+                                                            <span class="hljs-built_in">cd</span> /usr/share/jenkins
+                                                            sudo curl -o jenkins.war http://ftp-chi.osuosl.org/pub/jenkins/war/2.330/jenkins.war        
+                                                                        sudo service jenkins restart                
+                                                                        </code></pre>
+                            </div>
+                        </div>
+                        <style>
+                            #GoTop {
+                                position: fixed;
+                                left: 10px;
+                                bottom: 30px;
+                                background-color: #fafafa;
+                                border: 1px solid rgba(0, 0, 0, .07);
+                                border-radius: 1px;
+                                -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+                                box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+                                background-clip: padding-box;
+                                z-index: 999;
+                                cursor: pointer;
+                                font-size: 25px;
+                                padding: 5px 10px;
+                                color: #B10DC9;
+                            }
+
+                            .toc {
+                                position: fixed;
+                                top: 50%;
+                                left: 1%;
+                                width: 10%;
+                                transform: translateY(-50%);
+                                text-align: center;
+                                border-radius: 5px;
+                                padding-bottom: 1rem;
+                            }
+
+                            .nav ul li a:hover {
+                                text-decoration: underline;
+                                font-weight: bold;
+                                color: #B10DC9;
+                            }
+
+                            .toc .page-header {
+                                margin-top: 2rem;
+                                margin-bottom: 1rem;
+                                color: #fafafa;
+                            }
+
+                            .toc-nav ul {
+                                white-space: nowrap;
+                                line-height: 1rem;
+                            }
+
+                            .toc-nav ul ul ul {
+                                margin-left: 1rem;
+                            }
+
+                            .toc-nav .nav-link {
+                                text-overflow: ellipsis;
+                                color: #fafafa;
+                            }
+
+                            @media (max-width: 1080px) {
+                                main {
+                                    max-width: 100%;
+                                }
+
+                                .toc {
+                                    display: none;
+                                }
+                            }
+                        </style>
+
+                    </div>
+                </article>
+            </div>
+        </div> <br><br>
+        
+    </div>
+    <footer class="container-fluid text-center">
+        <p>VNC Console</p>
+        <!-- <form class="form-inline">Get Details:                        <input type="email" class="form-control" size="50" placeholder="deniz@p1ngp0ng.net">                        <button type="button" class="btn btn-danger">Sign Up</button>                    </form> -->
+    </footer>
+</body>
+
+</html>
